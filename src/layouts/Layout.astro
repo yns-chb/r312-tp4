@@ -31,6 +31,20 @@ const currentPath = Astro.url.pathname;
           }}
           href="/Penguins/Penguins_plusieurs_filtres/">Plusieurs filtres</a
         >
+        <a
+          class:list={{ active: currentPath === "/Diamonds/Simple_diamonds/" }}
+          href="/Diamonds/Simple_diamonds/">Diamonds</a
+        >
+        <a
+          class:list={{ active: currentPath === "/Diamonds/Diamonds_filtre/" }}
+          href="/Diamonds/Diamonds_filtre/">Filtre diamonds</a
+        >
+        <a
+          class:list={{
+            active: currentPath === "/Diamonds/Diamonds_plusieurs_filtres/",
+          }}
+          href="/Diamonds/Diamonds_plusieurs_filtres/">Plusieurs filtres diamonds</a
+        >
       </nav>
     </header>
     <slot />

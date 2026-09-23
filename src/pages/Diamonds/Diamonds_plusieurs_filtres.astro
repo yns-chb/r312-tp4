@@ -1,0 +1,93 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import diamonds from "../../assets/diamonds.json";
+---
+
+<Layout>
+    <h1 class="text-2xl">Diamonds avec plusieurs filtres</h1>
+    <form id="filters-form">
+        <select name="cut" id="cut">
+            <option value="">All cuts</option>
+            <option value="Fair">Fair</option>
+            <option value="Good">Good</option>
+            <option value="Very Good">Very Good</option>
+            <option value="Premium">Premium</option>
+            <option value="Ideal">Ideal</option>
+        </select>
+        <select name="color" id="color">
+            <option value="">All colors</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="H">H</option>
+            <option value="I">I</option>
+            <option value="J">J</option>
+        </select>
+        <select name="clarity" id="clarity">
+            <option value="">All clarities</option>
+            <option value="I1">I1</option>
+            <option value="SI2">SI2</option>
+            <option value="SI1">SI1</option>
+            <option value="VS2">VS2</option>
+            <option value="VS1">VS1</option>
+            <option value="VVS2">VVS2</option>
+            <option value="VVS1">VVS1</option>
+            <option value="IF">IF</option>
+        </select>
+    </form>
+    <div id="diamonds-plot" data-diamonds={JSON.stringify(diamonds)}></div>
+
+    <script>
+        import * as Plot from "@observablehq/plot";
+
+        type Diamond = {
+            cut: string;
+            color: string;
+            clarity: string;
+            carat: number;
+            price: number;
+        };
+
+        const selectCut = document.querySelector<HTMLSelectElement>("#cut")!;
+        const selectColor =
+            document.querySelector<HTMLSelectElement>("#color")!;
+        const selectClarity =
+            document.querySelector<HTMLSelectElement>("#clarity")!;
+        const plotContainer =
+            document.querySelector<HTMLDivElement>("#diamonds-plot")!;
+
+        const diamonds: Diamond[] = JSON.parse(
+            plotContainer.dataset.diamonds ?? "[]",
+        );
+
+        function renderPlot() {
+            const cut = selectCut.value;
+            const color = selectColor.value;
+            const clarity = selectClarity.value;
+            const filteredDiamonds = diamonds.filter(
+                (diamond) =>
+                    (!cut || diamond.cut === cut) &&
+                    (!color || diamond.color === color) &&
+                    (!clarity || diamond.clarity === clarity),
+            );
+
+            plotContainer.replaceChildren(
+                Plot.plot({
+                    marks: [
+                        Plot.dot(filteredDiamonds, {
+                            x: "carat",
+                            y: "price",
+                            stroke: "cut",
+                        }),
+                    ],
+                }),
+            );
+        }
+
+        selectCut.addEventListener("change", renderPlot);
+        selectColor.addEventListener("change", renderPlot);
+        selectClarity.addEventListener("change", renderPlot);
+        renderPlot();
+    </script>
+</Layout>
