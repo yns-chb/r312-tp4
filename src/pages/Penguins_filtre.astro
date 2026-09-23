@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import penguins from "../assets/penguins.json";
+---
+
+<Layout>
+    <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
+    <form id="species-form">
+        <select name="species" id="species">
+            <option value="">All species</option>
+            <option value="Adelie">Adelie</option>
+            <option value="Chinstrap">Chinstrap</option>
+            <option value="Gentoo">Gentoo</option>
+        </select>
+    </form>
+    <div id="penguins-plot" data-penguins={JSON.stringify(penguins)}></div>
+
+    <script>
+        import * as Plot from "@observablehq/plot";
+
+        const selectSpecies = document.querySelector("#species");
+        const plotContainer = document.querySelector("#penguins-plot");
+        const penguins = JSON.parse(plotContainer.dataset.penguins);
+
+        function renderPlot() {
+            const species = selectSpecies.value;
+            const filteredPenguins = species
+                ? penguins.filter((penguin) => penguin.species === species)
+                : penguins;
+
+            plotContainer.replaceChildren(
+                Plot.plot({
+                    marks: [
+                        Plot.dot(filteredPenguins, {
+                            x: "culmen_length_mm",
+                            y: "culmen_depth_mm",
+                            stroke: "species",
+                        }),
+                    ],
+                }),
+            );
+        }
+
+        selectSpecies.addEventListener("change", renderPlot);
+        renderPlot();
+    </script>
+</Layout>
