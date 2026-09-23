@@ -4,16 +4,41 @@ import penguins from "../../assets/penguins.json";
 ---
 
 <Layout>
-    <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-    <form id="species-form">
-        <select name="species" id="species">
-            <option value="">All species</option>
-            <option value="Adelie">Adelie</option>
-            <option value="Chinstrap">Chinstrap</option>
-            <option value="Gentoo">Gentoo</option>
-        </select>
-    </form>
-    <div id="penguins-plot" data-penguins={JSON.stringify(penguins)}></div>
+    <main class="data-page">
+        <section class="data-intro">
+            <p class="eyebrow">Penguin explorer</p>
+            <h1>Filtre les penguins</h1>
+            <p class="intro-text">
+                Choisis une espèce pour isoler ses mesures dans le graphique.
+            </p>
+        </section>
+        <section class="data-panel">
+            <div class="data-heading">
+                <div>
+                    <p class="eyebrow">Filtre</p>
+                    <h2>Choisir une espèce</h2>
+                </div>
+            </div>
+            <form id="species-form" class="data-filters">
+                <label
+                    >Espèce
+                    <select name="species" id="species">
+                        <option value="">All species</option>
+                        <option value="Adelie">Adelie</option>
+                        <option value="Chinstrap">Chinstrap</option>
+                        <option value="Gentoo">Gentoo</option>
+                    </select>
+                </label>
+            </form>
+        </section>
+        <section
+            class="data-panel data-plot"
+            aria-label="Graphique filtré des penguins"
+        >
+            <div id="penguins-plot" data-penguins={JSON.stringify(penguins)}>
+            </div>
+        </section>
+    </main>
 
     <script>
         import * as Plot from "@observablehq/plot";

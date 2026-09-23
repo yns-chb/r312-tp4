@@ -6,18 +6,36 @@ import diamonds from "../../assets/diamonds.json";
 ---
 
 <Layout>
-    <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-    <PlotFigure
-        options={{
-            marks: [
-                Plot.dot(diamonds, {
-                    x: "carat",
-                    y: "price",
-                    stroke: "cut",
-                }),
-            ],
-        }}
-    />
-
-    
+    <main class="data-page">
+        <section class="data-intro">
+            <p class="eyebrow">Diamond explorer</p>
+            <h1>Découvre les diamonds</h1>
+            <p class="intro-text">
+                Observe le prix des diamonds selon leur poids et leur qualité de
+                coupe.
+            </p>
+        </section>
+        <section
+            class="data-panel data-plot"
+            aria-label="Graphique des diamonds"
+        >
+            <div class="data-heading">
+                <div>
+                    <p class="eyebrow">Visualisation</p>
+                    <h2>Carat et prix par coupe</h2>
+                </div>
+            </div>
+            <PlotFigure
+                options={{
+                    marks: [
+                        Plot.dot(diamonds, {
+                            x: "carat",
+                            y: "price",
+                            stroke: "cut",
+                        }),
+                    ],
+                }}
+            />
+        </section>
+    </main>
 </Layout>

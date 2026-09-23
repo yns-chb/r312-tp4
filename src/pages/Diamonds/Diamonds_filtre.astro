@@ -4,18 +4,43 @@ import diamonds from "../../assets/diamonds.json";
 ---
 
 <Layout>
-    <h1 class="text-2xl">Diamonds par coupe</h1>
-    <form id="cut-form">
-        <select name="cut" id="cut">
-            <option value="">All cuts</option>
-            <option value="Fair">Fair</option>
-            <option value="Good">Good</option>
-            <option value="Very Good">Very Good</option>
-            <option value="Premium">Premium</option>
-            <option value="Ideal">Ideal</option>
-        </select>
-    </form>
-    <div id="diamonds-plot" data-diamonds={JSON.stringify(diamonds)}></div>
+    <main class="data-page">
+        <section class="data-intro">
+            <p class="eyebrow">Diamond explorer</p>
+            <h1>Filtre les diamonds</h1>
+            <p class="intro-text">
+                Choisis une coupe pour observer les diamonds correspondants.
+            </p>
+        </section>
+        <section class="data-panel">
+            <div class="data-heading">
+                <div>
+                    <p class="eyebrow">Filtre</p>
+                    <h2>Choisir une coupe</h2>
+                </div>
+            </div>
+            <form id="cut-form" class="data-filters">
+                <label
+                    >Coupe
+                    <select name="cut" id="cut">
+                        <option value="">All cuts</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Good">Good</option>
+                        <option value="Very Good">Very Good</option>
+                        <option value="Premium">Premium</option>
+                        <option value="Ideal">Ideal</option>
+                    </select>
+                </label>
+            </form>
+        </section>
+        <section
+            class="data-panel data-plot"
+            aria-label="Graphique filtré des diamonds"
+        >
+            <div id="diamonds-plot" data-diamonds={JSON.stringify(diamonds)}>
+            </div>
+        </section>
+    </main>
 
     <script>
         import * as Plot from "@observablehq/plot";

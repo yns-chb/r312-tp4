@@ -4,39 +4,79 @@ import diamonds from "../../assets/diamonds.json";
 ---
 
 <Layout>
-    <h1 class="text-2xl">Diamonds avec plusieurs filtres</h1>
-    <form id="filters-form">
-        <select name="cut" id="cut">
-            <option value="">All cuts</option>
-            <option value="Fair">Fair</option>
-            <option value="Good">Good</option>
-            <option value="Very Good">Very Good</option>
-            <option value="Premium">Premium</option>
-            <option value="Ideal">Ideal</option>
-        </select>
-        <select name="color" id="color">
-            <option value="">All colors</option>
-            <option value="D">D</option>
-            <option value="E">E</option>
-            <option value="F">F</option>
-            <option value="G">G</option>
-            <option value="H">H</option>
-            <option value="I">I</option>
-            <option value="J">J</option>
-        </select>
-        <select name="clarity" id="clarity">
-            <option value="">All clarities</option>
-            <option value="I1">I1</option>
-            <option value="SI2">SI2</option>
-            <option value="SI1">SI1</option>
-            <option value="VS2">VS2</option>
-            <option value="VS1">VS1</option>
-            <option value="VVS2">VVS2</option>
-            <option value="VVS1">VVS1</option>
-            <option value="IF">IF</option>
-        </select>
-    </form>
-    <div id="diamonds-plot" data-diamonds={JSON.stringify(diamonds)}></div>
+    <main class="page-shell">
+        <section class="page-intro">
+            <p class="eyebrow">Diamond explorer</p>
+            <h1>Explore les diamonds</h1>
+            <p class="intro-text">
+                Compare le prix et le poids des diamonds selon leur coupe, leur
+                couleur et leur pureté.
+            </p>
+        </section>
+
+        <section class="dashboard" aria-labelledby="filters-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Filtres</p>
+                    <h2 id="filters-title">Affiner la sélection</h2>
+                </div>
+                <span id="result-count" class="result-count"></span>
+            </div>
+
+            <form id="filters-form" class="filters-grid">
+                <label>
+                    Coupe
+                    <select name="cut" id="cut">
+                        <option value="">Toutes les coupes</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Good">Good</option>
+                        <option value="Very Good">Very Good</option>
+                        <option value="Premium">Premium</option>
+                        <option value="Ideal">Ideal</option>
+                    </select>
+                </label>
+                <label>
+                    Couleur
+                    <select name="color" id="color">
+                        <option value="">Toutes les couleurs</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                        <option value="H">H</option>
+                        <option value="I">I</option>
+                        <option value="J">J</option>
+                    </select>
+                </label>
+                <label>
+                    Pureté
+                    <select name="clarity" id="clarity">
+                        <option value="">Toutes les puretés</option>
+                        <option value="I1">I1</option>
+                        <option value="SI2">SI2</option>
+                        <option value="SI1">SI1</option>
+                        <option value="VS2">VS2</option>
+                        <option value="VS1">VS1</option>
+                        <option value="VVS2">VVS2</option>
+                        <option value="VVS1">VVS1</option>
+                        <option value="IF">IF</option>
+                    </select>
+                </label>
+            </form>
+        </section>
+
+        <section class="chart-panel" aria-labelledby="chart-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Visualisation</p>
+                    <h2 id="chart-title">Carat et prix</h2>
+                </div>
+                <span class="chart-key">Couleur des points : coupe</span>
+            </div>
+            <div id="diamonds-plot" data-diamonds={JSON.stringify(diamonds)}>
+            </div>
+        </section>
+    </main>
 
     <script>
         import * as Plot from "@observablehq/plot";
@@ -56,6 +96,8 @@ import diamonds from "../../assets/diamonds.json";
             document.querySelector<HTMLSelectElement>("#clarity")!;
         const plotContainer =
             document.querySelector<HTMLDivElement>("#diamonds-plot")!;
+        const resultCount =
+            document.querySelector<HTMLSpanElement>("#result-count")!;
 
         const diamonds: Diamond[] = JSON.parse(
             plotContainer.dataset.diamonds ?? "[]",
@@ -71,6 +113,8 @@ import diamonds from "../../assets/diamonds.json";
                     (!color || diamond.color === color) &&
                     (!clarity || diamond.clarity === clarity),
             );
+
+            resultCount.textContent = `${filteredDiamonds.length} diamonds`;
 
             plotContainer.replaceChildren(
                 Plot.plot({
@@ -91,3 +135,144 @@ import diamonds from "../../assets/diamonds.json";
         renderPlot();
     </script>
 </Layout>
+
+<style>
+    .page-shell {
+        width: min(1120px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 3.5rem 0 5rem;
+        color: #172033;
+    }
+
+    .page-intro {
+        max-width: 680px;
+        margin-bottom: 2.5rem;
+    }
+
+    .eyebrow {
+        margin: 0 0 0.55rem;
+        color: #b06a32;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+        margin-top: 0;
+    }
+
+    h1 {
+        margin-bottom: 0.8rem;
+        font-size: clamp(2.2rem, 6vw, 4.8rem);
+        line-height: 0.98;
+        letter-spacing: -0.04em;
+    }
+
+    h2 {
+        margin-bottom: 0;
+        font-size: 1.2rem;
+    }
+
+    .intro-text {
+        max-width: 560px;
+        margin-bottom: 0;
+        color: #647084;
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    .dashboard,
+    .chart-panel {
+        border: 1px solid #e2e5ea;
+        border-radius: 0.75rem;
+        background: #ffffff;
+        box-shadow: 0 12px 30px rgb(31 41 55 / 7%);
+    }
+
+    .dashboard {
+        margin-bottom: 1.25rem;
+        padding: 1.35rem;
+    }
+
+    .chart-panel {
+        padding: 1.35rem;
+        overflow: hidden;
+    }
+
+    .chart-panel :global(svg) {
+        width: 100%;
+        height: auto;
+        min-height: 24rem;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .result-count,
+    .chart-key {
+        color: #647084;
+        font-size: 0.85rem;
+    }
+
+    .result-count {
+        color: #b06a32;
+        font-weight: 700;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    label {
+        display: grid;
+        gap: 0.45rem;
+        color: #4b5565;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    select {
+        width: 100%;
+        min-height: 2.75rem;
+        padding: 0 0.75rem;
+        border: 1px solid #ccd2dc;
+        border-radius: 0.45rem;
+        background: #fbfcfd;
+        color: #172033;
+        font: inherit;
+    }
+
+    select:focus {
+        outline: 3px solid rgb(176 106 50 / 22%);
+        border-color: #b06a32;
+    }
+
+    #diamonds-plot {
+        overflow-x: auto;
+    }
+
+    @media (max-width: 680px) {
+        .page-shell {
+            padding-top: 2.5rem;
+        }
+
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section-heading {
+            align-items: start;
+            flex-direction: column;
+        }
+    }
+</style>

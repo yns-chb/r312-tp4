@@ -4,27 +4,65 @@ import penguins from "../../assets/penguins.json";
 ---
 
 <Layout>
-    <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-    <form id="filters-form">
-        <select name="species" id="species">
-            <option value="">All species</option>
-            <option value="Adelie">Adelie</option>
-            <option value="Chinstrap">Chinstrap</option>
-            <option value="Gentoo">Gentoo</option>
-        </select>
-        <select name="island" id="island">
-            <option value="">All islands</option>
-            <option value="Biscoe">Biscoe</option>
-            <option value="Dream">Dream</option>
-            <option value="Torgersen">Torgersen</option>
-        </select>
-        <select name="sex" id="sex">
-            <option value="">All sexes</option>
-            <option value="MALE">MALE</option>
-            <option value="FEMALE">FEMALE</option>
-        </select>
-    </form>
-    <div id="penguins-plot" data-penguins={JSON.stringify(penguins)}></div>
+    <main class="data-page">
+        <section class="data-intro">
+            <p class="eyebrow">Penguin explorer</p>
+            <h1>Explore les penguins</h1>
+            <p class="intro-text">
+                Compare les manchots selon leur espèce, leur île et leur sexe.
+            </p>
+        </section>
+        <section class="data-panel">
+            <div class="data-heading">
+                <div>
+                    <p class="eyebrow">Filtres</p>
+                    <h2>Affiner la sélection</h2>
+                </div>
+                <span id="penguin-result-count"></span>
+            </div>
+            <form id="filters-form" class="data-filters">
+                <label
+                    >Espèce
+                    <select name="species" id="species">
+                        <option value="">All species</option>
+                        <option value="Adelie">Adelie</option>
+                        <option value="Chinstrap">Chinstrap</option>
+                        <option value="Gentoo">Gentoo</option>
+                    </select>
+                </label>
+                <label
+                    >Île
+                    <select name="island" id="island">
+                        <option value="">All islands</option>
+                        <option value="Biscoe">Biscoe</option>
+                        <option value="Dream">Dream</option>
+                        <option value="Torgersen">Torgersen</option>
+                    </select>
+                </label>
+                <label
+                    >Sexe
+                    <select name="sex" id="sex">
+                        <option value="">All sexes</option>
+                        <option value="MALE">MALE</option>
+                        <option value="FEMALE">FEMALE</option>
+                    </select>
+                </label>
+            </form>
+        </section>
+        <section
+            class="data-panel data-plot"
+            aria-label="Graphique des penguins"
+        >
+            <div class="data-heading">
+                <div>
+                    <p class="eyebrow">Visualisation</p>
+                    <h2>Longueur et profondeur du bec</h2>
+                </div>
+            </div>
+            <div id="penguins-plot" data-penguins={JSON.stringify(penguins)}>
+            </div>
+        </section>
+    </main>
 
     <script>
         import * as Plot from "@observablehq/plot";
@@ -44,6 +82,9 @@ import penguins from "../../assets/penguins.json";
         const selectSex = document.querySelector<HTMLSelectElement>("#sex")!;
         const plotContainer =
             document.querySelector<HTMLDivElement>("#penguins-plot")!;
+        const resultCount = document.querySelector<HTMLSpanElement>(
+            "#penguin-result-count",
+        )!;
 
         const penguins: Penguin[] = JSON.parse(
             plotContainer.dataset.penguins ?? "[]",
@@ -59,6 +100,7 @@ import penguins from "../../assets/penguins.json";
                     (!island || penguin.island === island) &&
                     (!sex || penguin.sex === sex),
             );
+            resultCount.textContent = `${filteredPenguins.length} penguins`;
 
             plotContainer.replaceChildren(
                 Plot.plot({
