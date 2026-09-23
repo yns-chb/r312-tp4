@@ -1,0 +1,23 @@
+---
+import PlotFigure from "../../components/PlotFigure.astro";
+import Layout from "../../layouts/Layout.astro";
+import * as Plot from "@observablehq/plot";
+import diamonds from "../../assets/diamonds.json";
+---
+
+<Layout>
+    <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
+    <PlotFigure
+        options={{
+            marks: [
+                Plot.dot(diamonds, {
+                    x: "carat",
+                    y: "price",
+                    stroke: "cut",
+                }),
+            ],
+        }}
+    />
+
+    
+</Layout>

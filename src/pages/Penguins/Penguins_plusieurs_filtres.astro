@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import penguins from "../../assets/penguins.json";
+---
+
+<Layout>
+    <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
+    <form id="filters-form">
+        <select name="species" id="species">
+            <option value="">All species</option>
+            <option value="Adelie">Adelie</option>
+            <option value="Chinstrap">Chinstrap</option>
+            <option value="Gentoo">Gentoo</option>
+        </select>
+        <select name="island" id="island">
+            <option value="">All islands</option>
+            <option value="Biscoe">Biscoe</option>
+            <option value="Dream">Dream</option>
+            <option value="Torgersen">Torgersen</option>
+        </select>
+        <select name="sex" id="sex">
+            <option value="">All sexes</option>
+            <option value="MALE">MALE</option>
+            <option value="FEMALE">FEMALE</option>
+        </select>
+    </form>
+    <div id="penguins-plot" data-penguins={JSON.stringify(penguins)}></div>
+
+    <script>
+        import * as Plot from "@observablehq/plot";
+
+        type Penguin = {
+            species: string;
+            island: string;
+            sex: string;
+            culmen_length_mm: number;
+            culmen_depth_mm: number;
+        };
+
+        const selectSpecies =
+            document.querySelector<HTMLSelectElement>("#species")!;
+        const selectIsland =
+            document.querySelector<HTMLSelectElement>("#island")!;
+        const selectSex = document.querySelector<HTMLSelectElement>("#sex")!;
+        const plotContainer =
+            document.querySelector<HTMLDivElement>("#penguins-plot")!;
+
+        const penguins: Penguin[] = JSON.parse(
+            plotContainer.dataset.penguins ?? "[]",
+        );
+
+        function renderPlot() {
+            const species = selectSpecies.value;
+            const island = selectIsland.value;
+            const sex = selectSex.value;
+            const filteredPenguins = penguins.filter(
+                (penguin) =>
+                    (!species || penguin.species === species) &&
+                    (!island || penguin.island === island) &&
+                    (!sex || penguin.sex === sex),
+            );
+
+            plotContainer.replaceChildren(
+                Plot.plot({
+                    marks: [
+                        Plot.dot(filteredPenguins, {
+                            x: "culmen_length_mm",
+                            y: "culmen_depth_mm",
+                            stroke: "species",
+                        }),
+                    ],
+                }),
+            );
+        }
+
+        selectSpecies.addEventListener("change", renderPlot);
+        selectIsland.addEventListener("change", renderPlot);
+        selectSex.addEventListener("change", renderPlot);
+        renderPlot();
+    </script>
+</Layout>

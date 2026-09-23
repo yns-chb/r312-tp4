@@ -1,0 +1,50 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import diamonds from "../../assets/diamonds.json";
+---
+
+<Layout>
+    <h1 class="text-2xl">Diamonds par coupe</h1>
+    <form id="cut-form">
+        <select name="cut" id="cut">
+            <option value="">All cuts</option>
+            <option value="Fair">Fair</option>
+            <option value="Good">Good</option>
+            <option value="Very Good">Very Good</option>
+            <option value="Premium">Premium</option>
+            <option value="Ideal">Ideal</option>
+        </select>
+    </form>
+    <div id="diamonds-plot" data-diamonds={JSON.stringify(diamonds)}></div>
+
+    <script>
+        import * as Plot from "@observablehq/plot";
+
+        const selectCut = document.querySelector<HTMLSelectElement>("#cut")!;
+        const plotContainer =
+            document.querySelector<HTMLDivElement>("#diamonds-plot")!;
+        const diamonds = JSON.parse(plotContainer.dataset.diamonds ?? "[]");
+
+        function renderPlot() {
+            const cut = selectCut.value;
+            const filteredDiamonds = cut
+                ? diamonds.filter((diamond) => diamond.cut === cut)
+                : diamonds;
+
+            plotContainer.replaceChildren(
+                Plot.plot({
+                    marks: [
+                        Plot.dot(filteredDiamonds, {
+                            x: "carat",
+                            y: "price",
+                            stroke: "cut",
+                        }),
+                    ],
+                }),
+            );
+        }
+
+        selectCut.addEventListener("change", renderPlot);
+        renderPlot();
+    </script>
+</Layout>
